@@ -1,4 +1,6 @@
+import { router } from 'expo-router';
 import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type NotePreview = {
   id: string;
@@ -18,7 +20,7 @@ const MockNotes: NotePreview[] = [
     id: "2", 
     title: "Second Note", 
     preview: "This is a preview of the second note.", 
-    updatedAt: "Yesterday"
+    updatedAt: "Today"
   },
   {
     id: "3", 
@@ -26,11 +28,23 @@ const MockNotes: NotePreview[] = [
     preview: "This is a preview of the third note.", 
     updatedAt: "Today"
   },
+  {
+    id: "4", 
+    title: "Fourth Note", 
+    preview: "This is a preview of the fourth note.", 
+    updatedAt: "Today"
+  },
+  {
+    id: "5", 
+    title: "Fifth Note", 
+    preview: "This is a preview of the fifth note.", 
+    updatedAt: "Today"
+  }
 ]
 
 export default function Index() {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom']}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.h1}>Fast Notes</Text>
@@ -41,7 +55,7 @@ export default function Index() {
       <View style={styles.searchWrap}>
         <TextInput 
         style={styles.search} 
-        placeholder='Search in notes...'
+        placeholder='Search for a note...'
         placeholderTextColor="#999">
         </TextInput>
       </View>
@@ -67,7 +81,17 @@ export default function Index() {
           )}
         />
       </View>
-    </View> 
+
+      {/* Button Creating Note */}
+      <Pressable
+        onPress={() => router.push('/new-note')} 
+        style={({ pressed }) => [
+          styles.button,
+          pressed && styles.buttonPressed
+        ]}>
+        <Text style={styles.buttonIcon}>+</Text>
+      </Pressable>
+    </SafeAreaView> 
   )
 }
 
@@ -108,7 +132,7 @@ const styles = StyleSheet.create({
   listContent: { 
     padding: 16, 
     paddingBottom: 104, 
-    gap: 10 },
+    gap: 5 },
 
   card: {
     backgroundColor: "#fff",
@@ -118,7 +142,7 @@ const styles = StyleSheet.create({
     borderColor: "#efefef",
   },
   cardPressed: { 
-    transform: [{ scale: 0.995 }], opacity: 0.95 },
+    transform: [{ scale: 1 }], opacity: 0.70 },
 
   cardTop: { 
     flexDirection: "row", 
@@ -141,38 +165,26 @@ const styles = StyleSheet.create({
     opacity: 0.75, 
     color: "#111" },
 
-  empty: { 
-    paddingTop: 40, 
-    paddingHorizontal: 4, 
-    gap: 8 },
-  emptyTitle: { 
-    fontSize: 18, 
-    fontWeight: "800", 
-    color: "#111" },
-  emptyText: { 
-    fontSize: 14, 
-    opacity: 0.7, 
-    color: "#111" },
-
-  fab: {
+  button: {
     position: "absolute",
-    right: 18,
-    bottom: 18,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    bottom: 24,
+    right: 24,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     backgroundColor: "#111",
     alignItems: "center",
     justifyContent: "center",
+    elevation: 8,
   },
-  fabPressed: { 
-    transform: [{ scale: 0.98 }], 
-    opacity: 0.95 
+  buttonPressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.95 }],
   },
-  fabText: { 
-    color: "#fff", 
-    fontSize: 30, 
-    lineHeight: 30, 
-    fontWeight: "900" 
+  buttonIcon: {
+    fontSize: 28,
+    color: "#fff",
+    fontWeight: "300",
+    marginTop: -2,
   },
 });

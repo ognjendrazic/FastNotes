@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function NewNote() {
@@ -23,6 +23,14 @@ export default function NewNote() {
                 multiline={true}>
                 </TextInput>
             </View>
+            
+              <Pressable
+                style={({ pressed }) => [
+                  styles.button,
+                  pressed && styles.buttonPressed,
+                ]}>
+                <Text style={styles.buttonIcon}>Save</Text>
+              </Pressable>
         </SafeAreaView>
     )
 }
@@ -30,11 +38,12 @@ export default function NewNote() {
 const styles = StyleSheet.create({
   container: { 
     flex: 1, 
-    backgroundColor: "#f6f6f6" },
+    backgroundColor: "#f6f6f6",
+    paddingHorizontal: 16,
+  },
 
   header: { 
     paddingTop: 16, 
-    paddingHorizontal: 16, 
     paddingBottom: 10 },
   h1: { 
     fontSize: 28, 
@@ -56,5 +65,25 @@ const styles = StyleSheet.create({
     borderColor: "#ededed",
     fontSize: 15,
     color: "#111",
+  },
+  button: {
+    marginTop: 20,
+    height: 54,
+    borderRadius: 16,
+    backgroundColor: "#000000",
+    alignItems: "center",
+    justifyContent: "center",
+    elevation: 8,
+  },
+  buttonPressed: {
+    opacity: 0.8,
+    transform: [{ scale: 1 }],
+    backgroundColor: "#999",
+  },
+  buttonIcon: {
+    fontSize: 17,
+    color: "#fff",
+    fontWeight: "600",
+    letterSpacing: 0.5,
   },
 });

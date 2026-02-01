@@ -67,7 +67,8 @@ export default function Index() {
           keyExtractor={(notes) => notes.id}
           contentContainerStyle={styles.listContent}
           renderItem={({ item }) => (
-            <Pressable 
+            <Pressable
+              onPress={() => router.push(`/note/${item.id}`)} 
               style={({ pressed }) => [
                 styles.card, 
                 pressed && styles.cardPressed

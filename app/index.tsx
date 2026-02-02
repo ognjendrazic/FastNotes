@@ -1,10 +1,17 @@
 import { router } from 'expo-router';
+import { useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNotes } from './store/NotesProvider';
 
 export default function Index() {
   const { notes } = useNotes();
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredNotes = notes.filter((note) =>
+    note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    note.content.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
@@ -17,16 +24,18 @@ export default function Index() {
       {/* Search Bar */}
       <View style={styles.searchWrap}>
         <TextInput 
-        style={styles.search} 
-        placeholder='Search for a note...'
-        placeholderTextColor="#999">
-        </TextInput>
+          style={styles.search} 
+          placeholder='Search for a note...'
+          placeholderTextColor="#999"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
       </View>
 
       {/* Notes List */}
       <View>
         <FlatList
-          data={notes}
+          data={filteredNotes}
           keyExtractor={(notes) => notes.id}
           contentContainerStyle={styles.listContent}
           renderItem={({ item }) => (
@@ -40,7 +49,7 @@ export default function Index() {
                 <Text style={styles.title}>{item.title}</Text>
                 <Text style={styles.time}>{item.updatedAt}</Text>
               </View>
-              <Text style={styles.preview}>{item.content}</Text>
+              <Text style={styles.preview} numberOfLines={1}>{item.content}</Text>
             </Pressable>
           )}
         />
@@ -76,7 +85,7 @@ const styles = StyleSheet.create({
   sub: { 
     marginTop: 4, 
     fontSize: 14, 
-    opacity: 0.7, 
+    opacity: 0.8, 
     color: "#111" },
 
   searchWrap: { 
@@ -119,7 +128,7 @@ const styles = StyleSheet.create({
     color: "#111" },
   time: { 
     fontSize: 12, 
-    opacity: 0.55, 
+    opacity: 0.80, 
     color: "#111" },
 
   preview: { 

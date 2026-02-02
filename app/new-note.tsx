@@ -62,16 +62,18 @@ const styles = StyleSheet.create({
 
   header: { 
     paddingTop: 16, 
-    paddingBottom: 10 },
+    paddingBottom: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   h1: { 
-    fontSize: 28, 
+    fontSize: 20, 
     fontWeight: "800", 
-    letterSpacing: -0.3, 
     color: "#111" },
   sub: { 
-    marginTop: 4, 
+    marginTop: 2, 
     fontSize: 14, 
-    opacity: 0.7, 
+    opacity: 0.8, 
     color: "#111" },
 
   search: {

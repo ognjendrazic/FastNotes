@@ -1,44 +1,73 @@
-import { StyleSheet, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useLocalSearchParams } from "expo-router";
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { useNotes } from "../store/NotesProvider";
 
+export default function NoteDetail() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const { getNoteById } = useNotes();
 
-export default function NoteDetailsPage() {
-  return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
-      <View>
+  const note = id ? getNoteById(id) : null;
+
+  if (!note) {
+    return (
+      <View style={styles.container}>
+        <Text>Note not found</Text>
       </View>
-    </SafeAreaView>
-  )
+    );
+  }
+
+return (
+  <View style={styles.container}>
+    <View style={styles.card}>
+      <Text style={styles.title}>{note.title}</Text>
+      <Text style={styles.meta}>Sist oppdatert: {new Date(note.updatedAt).toLocaleString()}</Text>
+      <View style={styles.divider} />
+      <Text style={styles.content}>{note.content}</Text>
+    </View>
+  </View>
+);
 }
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: "#f6f6f6" },
+  container: {
+    flex: 1,
+    backgroundColor: "#f6f6f6",
+    padding: 16,
+  },
 
-  header: { 
-    paddingTop: 16, 
-    paddingHorizontal: 16, 
-    paddingBottom: 10 },
-  h1: { 
-    fontSize: 28, 
-    fontWeight: "800", 
-    letterSpacing: -0.3, 
-    color: "#111" },
-  sub: { 
-    marginTop: 4, 
-    fontSize: 14, 
-    opacity: 0.7, 
-    color: "#111" },
-
-  search: {
-    height: 44,
-    borderRadius: 14,
-    paddingHorizontal: 14,
+  card: {
     backgroundColor: "#fff",
+    borderRadius: 16,
+    padding: 16,
     borderWidth: 1,
-    borderColor: "#ededed",
-    fontSize: 15,
+    borderColor: "#efefef",
+  },
+
+  title: {
+    fontSize: 24,
+    fontWeight: "800",
+    letterSpacing: -0.3,
     color: "#111",
+  },
+
+  meta: {
+    marginTop: 6,
+    fontSize: 12,
+    color: "#111",
+    opacity: 0.6,
+  },
+
+  divider: {
+    height: 1,
+    backgroundColor: "#efefef",
+    marginVertical: 12,
+  },
+
+  content: {
+    fontSize: 16,
+    lineHeight: 22,
+    color: "#111",
+    opacity: 0.9,
   },
 });

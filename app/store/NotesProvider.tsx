@@ -14,13 +14,12 @@ type NoteValues = {
 }
 
 const Notes = React.createContext<NoteValues | null>(null);
-
 export default function NotesProvider({ children }: { children: React.ReactNode }) {
     const [notes, setNotes] = React.useState<Note[]>([]);
 
     const addNote = (title: string, content: string) => {
         const newId = (Date.now()).toString();
-        const newUpdate = new Date().toISOString();
+        const newUpdate = new Date().toLocaleString();
         
         setNotes(prevNotes => [{
             id: newId,

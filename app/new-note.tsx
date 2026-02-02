@@ -43,9 +43,11 @@ export default function NewNote() {
             
               <Pressable
                 onPress={onSave}
+                disabled={!title.trim() || !content.trim()}
                 style={({ pressed }) => [
                   styles.button,
                   pressed && styles.buttonPressed,
+                  (!title.trim() || !content.trim()) && styles.buttonPressed,
                 ]}>
                 <Text style={styles.buttonIcon}>Save</Text>
               </Pressable>

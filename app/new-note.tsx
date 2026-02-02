@@ -1,7 +1,20 @@
+import { router } from "expo-router";
+import React from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNotes } from "./store/NotesProvider";
 
 export default function NewNote() {
+    const { addNote } = useNotes();
+
+    const [title, setTitle] = React.useState("");
+    const [content, setContent] = React.useState("");
+
+    const onSave = () => {
+      addNote(title, content);
+      router.back();
+    }
+
     return (
         <SafeAreaView style={styles.container} edges={['bottom']}>
             <View style={styles.header}>
@@ -12,19 +25,24 @@ export default function NewNote() {
                 <TextInput 
                 style={styles.search}
                 placeholder="Enter title for note"
-                placeholderTextColor="#999">
-                </TextInput>
+                placeholderTextColor="#999"
+                value={title}
+                onChangeText={setTitle}
+                />
             </View>
             <View>
                 <TextInput 
                 style={[styles.search, { height: 200, textAlignVertical: 'top', marginTop: 12 }]}
                 placeholder="Start writing your note here..."
                 placeholderTextColor="#999"
-                multiline={true}>
-                </TextInput>
+                multiline={true}
+                value={content}
+                onChangeText={setContent}
+                />
             </View>
             
               <Pressable
+                onPress={onSave}
                 style={({ pressed }) => [
                   styles.button,
                   pressed && styles.buttonPressed,

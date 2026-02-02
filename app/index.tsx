@@ -1,48 +1,11 @@
 import { router } from 'expo-router';
 import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-type NotePreview = {
-  id: string;
-  title: string;
-  preview: string;
-  updatedAt: string;
-}
-
-const MockNotes: NotePreview[] = [
-  {
-    id: "1", 
-    title: "First Note", 
-    preview: "This is a preview of the first note.", 
-    updatedAt: "Today"
-  },
-  {
-    id: "2", 
-    title: "Second Note", 
-    preview: "This is a preview of the second note.", 
-    updatedAt: "Today"
-  },
-  {
-    id: "3", 
-    title: "Third Note", 
-    preview: "This is a preview of the third note.", 
-    updatedAt: "Today"
-  },
-  {
-    id: "4", 
-    title: "Fourth Note", 
-    preview: "This is a preview of the fourth note.", 
-    updatedAt: "Today"
-  },
-  {
-    id: "5", 
-    title: "Fifth Note", 
-    preview: "This is a preview of the fifth note.", 
-    updatedAt: "Today"
-  }
-]
+import { useNotes } from './store/NotesProvider';
 
 export default function Index() {
+  const { notes } = useNotes();
+
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
       {/* Header */}
@@ -63,7 +26,7 @@ export default function Index() {
       {/* Notes List */}
       <View>
         <FlatList
-          data={MockNotes}
+          data={notes}
           keyExtractor={(notes) => notes.id}
           contentContainerStyle={styles.listContent}
           renderItem={({ item }) => (
@@ -77,7 +40,7 @@ export default function Index() {
                 <Text style={styles.title}>{item.title}</Text>
                 <Text style={styles.time}>{item.updatedAt}</Text>
               </View>
-              <Text style={styles.preview}>{item.preview}</Text>
+              <Text style={styles.preview}>{item.content}</Text>
             </Pressable>
           )}
         />

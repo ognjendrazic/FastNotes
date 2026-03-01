@@ -1,14 +1,31 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
+
+  // State for email and password inputs
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
   const isDisabled = !email.trim() || !password.trim();
+
+  // Get signIn function from auth context
+  const { signIn } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const handleSignIn = async () => {
+    setLoading(true);
+    const error = await signIn(email, password);
+    setLoading(false);
+
+    if (error) {
+      Alert.alert('Login Failed', error);
+    }else {
+      router.replace('/');
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
@@ -41,12 +58,13 @@ export default function Login() {
           />
 
           <Pressable
-            disabled={isDisabled}
+            disabled={isDisabled || loading}
             style={({ pressed }) => [
               styles.button,
               pressed && styles.buttonPressed,
-              isDisabled && styles.buttonDisabled,
+              (isDisabled || loading) && styles.buttonDisabled,
             ]}
+            onPress={handleSignIn}
           >
             <Text style={styles.buttonText}>Log In</Text>
           </Pressable>

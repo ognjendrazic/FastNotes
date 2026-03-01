@@ -1,9 +1,13 @@
+import { router } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAuth } from '../context/AuthContext';
 
 export default function Signup() {
+
+  // States for signup form
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -14,6 +18,26 @@ export default function Signup() {
   !email.trim() || 
   !password.trim() || 
   !confirmPassword.trim();
+
+  // Get signUp function from auth context
+  const { signUp } = useAuth();
+  const [loading, setLoading] = useState(false);
+
+  const handleSignUp = async () => {
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Passwords do not match');
+      return;
+    }
+    setLoading(true);
+    const error = await signUp(email, password, fullName);
+    setLoading(false);
+    if (error) {
+      Alert.alert('Sign Up Failed', error);
+    } else {
+      Alert.alert('Success', 'Account created successfully');
+      router.replace('/login');
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
@@ -64,12 +88,13 @@ export default function Signup() {
         />
 
         <Pressable
-          disabled={isDisabled}
+          disabled={isDisabled || loading}
           style={({ pressed }) => [
             styles.button,
             pressed && styles.buttonPressed,
-            isDisabled && styles.buttonDisabled,
+            (isDisabled || loading) && styles.buttonDisabled,
           ]}
+          onPress={handleSignUp}
         >
           <Text style={styles.buttonText}>Sign Up</Text>
         </Pressable>

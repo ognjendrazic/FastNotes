@@ -1,12 +1,14 @@
 import { Stack } from "expo-router";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import NotesProvider from "./store/NotesProvider";
+import { AuthProvider } from "../context/AuthContext";
+import NotesProvider from "../context/NotesContext";
 
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <KeyboardProvider>
+      <AuthProvider>
       <NotesProvider>
       <Stack screenOptions={{headerTitleAlign: "center"}}>
         <Stack.Screen name="index" options={{title: "Fast Notes"}} />
@@ -16,6 +18,7 @@ export default function RootLayout() {
         <Stack.Screen name="note/[id]" options={{title: "Note"}} />
       </Stack>
       </NotesProvider>
+      </AuthProvider>
       </KeyboardProvider>
     </SafeAreaProvider>
   ) 

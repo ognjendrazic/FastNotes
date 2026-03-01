@@ -1,7 +1,7 @@
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { useNotes } from "../store/NotesProvider";
+import { useNotes } from "../../context/NotesContext";
 
 export default function NoteDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();

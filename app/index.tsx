@@ -1,18 +1,30 @@
 import { Redirect, router } from 'expo-router';
 import { useState } from 'react';
-import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNotes } from './store/NotesProvider';
+import { useAuth } from '../context/AuthContext';
+import { useNotes } from '../context/NotesContext';
 
 export default function Index() {
-  const isLoggedIn = false; // Toggle to true/false for testing
-  if (!isLoggedIn) {
-    return <Redirect href="/login" />;
-  }
-
+  const { session, loading, signOut } = useAuth();
   const { notes } = useNotes();
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Show loading indicator while checking auth status, set to 3 seconds
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f6f6f6' }}>
+        <ActivityIndicator size="large" color="#111" />
+      </View>
+    );
+  }
+
+  // Redirect to login if not authenticated
+  if (!session) {
+    return <Redirect href="/login" />;
+  }
+
+  // Filter notes based on search query
   const filteredNotes = notes.filter((note) =>
     note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     note.content.toLowerCase().includes(searchQuery.toLowerCase())
@@ -22,7 +34,12 @@ export default function Index() {
     <SafeAreaView style={styles.container} edges={['bottom']}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.h1}>Fast Notes</Text>
+        <View style={styles.headerRow}>
+          <Text style={styles.h1}>Fast Notes</Text>
+          <Pressable onPress={signOut} style={({ pressed }) => [styles.signOutButton, pressed && { opacity: 0.6 }]}>
+            <Text style={styles.signOutText}>Sign Out</Text>
+          </Pressable>
+        </View>
         <Text style={styles.sub}>Your notes, organized and accessible.</Text>
       </View>
 
@@ -82,6 +99,22 @@ const styles = StyleSheet.create({
     paddingTop: 16, 
     paddingHorizontal: 16, 
     paddingBottom: 10 },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  signOutButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    backgroundColor: '#eee',
+  },
+  signOutText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#666',
+  },
   h1: { 
     fontSize: 28, 
     fontWeight: "800", 

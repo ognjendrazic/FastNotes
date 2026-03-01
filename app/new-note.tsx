@@ -2,7 +2,7 @@ import { router } from "expo-router";
 import React from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNotes } from "./store/NotesProvider";
+import { useNotes } from "../context/NotesContext";
 
 export default function NewNote() {
     const { addNote } = useNotes();

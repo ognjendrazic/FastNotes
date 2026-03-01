@@ -71,7 +71,8 @@ export default function Login() {
 
           <Pressable onPress={() => router.push('/signup')}>
             <Text style={styles.signupLink}>
-              Don't have an account? <Text style={styles.signupLinkBold}>Sign Up</Text>
+              <Text>Don't have an account?</Text>
+              <Text style={styles.signupLinkBold}>Sign Up</Text>
             </Text>
           </Pressable>
         </View>

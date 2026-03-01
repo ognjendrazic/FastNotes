@@ -1,10 +1,15 @@
-import { router } from 'expo-router';
+import { Redirect, router } from 'expo-router';
 import { useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNotes } from './store/NotesProvider';
 
 export default function Index() {
+  const isLoggedIn = false; // Toggle to true/false for testing
+  if (!isLoggedIn) {
+    return <Redirect href="/login" />;
+  }
+
   const { notes } = useNotes();
   const [searchQuery, setSearchQuery] = useState('');
 

@@ -19,13 +19,16 @@ export default function NotesProvider({ children }: { children: React.ReactNode 
 
     const addNote = (title: string, content: string) => {
         const newId = (Date.now()).toString();
-        const newUpdate = new Date().toLocaleString();
+        
+        const now = new Date();
+        const newUpdate = now.toLocaleDateString();
+        const newTime = now.toLocaleTimeString();
         
         setNotes(prevNotes => [{
             id: newId,
             title,
             content,
-            updatedAt: newUpdate
+            updatedAt: newUpdate + " " + newTime
         }, ...prevNotes]);
         return newId;
     }

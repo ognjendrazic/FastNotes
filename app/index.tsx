@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
   cardTop: { 
     flexDirection: "row", 
     alignItems: "center", 
-    gap: 10 },
+    gap: 10, },
   title: { 
     flex: 1, 
     fontSize: 16, 
@@ -167,7 +167,9 @@ const styles = StyleSheet.create({
   time: { 
     fontSize: 12, 
     opacity: 0.80, 
-    color: "#111" },
+    color: "#111",
+    textAlign: 'right',
+    maxWidth: 100,},
 
   preview: { 
     marginTop: 8, 

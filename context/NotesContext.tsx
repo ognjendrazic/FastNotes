@@ -1,42 +1,81 @@
+import { supabase } from '@/lib/supabase';
 import React from 'react';
+import { useAuth } from './AuthContext';
 
-export type Note = {
+export interface Note {
   id: string;
   title: string;
   content: string;
-  updatedAt: string;
+  updated_at: string;
 }
 
-type NoteValues = {
+interface NoteValues {
     notes: Note[];
-    addNote: (title: string, content: string) => string;
+    loading: boolean;
+    addNote: (title: string, content: string) => Promise<string | null>;
     getNoteById: (id: string) => Note | null;
+    deleteNote: (id: string) => Promise<void>;
 }
 
 const Notes = React.createContext<NoteValues | null>(null);
 export default function NotesProvider({ children }: { children: React.ReactNode }) {
     const [notes, setNotes] = React.useState<Note[]>([]);
+    const [loading, setLoading] = React.useState(true);
+    const { session } = useAuth();
 
-    const addNote = (title: string, content: string) => {
-        const newId = (Date.now()).toString();
-        
-        const now = new Date();
-        const newUpdate = now.toLocaleDateString();
-        const newTime = now.toLocaleTimeString();
-        
-        setNotes(prevNotes => [{
-            id: newId,
-            title,
-            content,
-            updatedAt: newUpdate + " " + newTime
-        }, ...prevNotes]);
-        return newId;
+    // Fetch notes 
+    const fetchNotes = async() => {
+        setLoading(true);
+        const {data, error} = await supabase
+        .from('Notes')
+        .select('*')
+        .order('updated_at', { ascending: false })
+        if(!error && data){
+            setNotes(data);
+        }else{
+            setLoading(false);
+            console.log("Error fetching notes:", error);
+        }
+        setLoading(false)
     }
+
+    // Fetch notes when user logs in
+    React.useEffect(() => {
+        if(session){
+            fetchNotes();
+        }else{
+            setNotes([]);
+            setLoading(false);
+        }
+    }, [session])
+
+    // Delete Notes
+    const deleteNote = async (id: string) => {
+        await supabase.from('Notes').delete().eq('id', id);
+        setNotes(prev => prev.filter(n => n.id !== id))
+    };
+
+    // Add Notes
+    const addNote = async (title: string, content: string) => {
+        const { data, error } = await supabase
+        .from('Notes')
+        .insert({title, content})
+        .select()
+        .single()
+
+        if (error) {
+            console.log('Error adding note', error)
+            return null;
+        }
+
+        setNotes(prev => [data, ...prev])
+        return data.id;
+    };
 
     const getNoteById = (id: string) => notes.find((n) => n.id === id) || null;
 
     return (
-        <Notes.Provider value={{ notes, addNote, getNoteById }}>{children}</Notes.Provider>
+        <Notes.Provider value={{ notes, loading, addNote, getNoteById, deleteNote }}>{children}</Notes.Provider>
     )
 }
 

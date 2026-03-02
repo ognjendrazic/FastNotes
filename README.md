@@ -5,7 +5,7 @@
 University of Grimstad, Norway
 
 **FastNotes** is a lightweight personal note-taking application built with **React Native** and **Expo**.
-The app allows users to create, view, and read notes **locally in memory** during an active app session. User authentication is handled by **Supabase**.
+User authentication and data storage are handled by **Supabase**.
 
 ## Features
 
@@ -13,14 +13,16 @@ The app allows users to create, view, and read notes **locally in memory** durin
 - View a list of existing notes
 - Open and read individual notes
 - Login/Signup with Supabase Authentication (Email and Password)
-- Notes are stored in database (postgress via supabase) based on user.id
+- Notes are stored in a database (PostgreSQL via Supabase)
+- Full CRUD operations (create, read, update and delete)
+- View company notes on a separate screen (read-only)
 
 ## Tech Stack
 
 - React Native
 - Expo
 - Node.js (**v24 LTS recommended**)
-- Other dependencies are retrived via **npm install**
+- Other dependencies are retrieved via **npm install**
 
 ## Prerequisites
 
@@ -32,6 +34,12 @@ Ensure the following are installed:
 
 ## Build & Run
 
+You need to create a **.env** file at the root of the directory. Get your Supabase project URL and publishable key from [Supabase Dashboard](https://app.supabase.com) → Settings → API, then add:
+```bash
+EXPO_PUBLIC_SUPABASE_URL="your-supabase-url"
+EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY="your-supabase-publishable-key"
+```
+
 After cloning the repository, install the required dependencies:
 ```bash
 npm install
@@ -39,12 +47,5 @@ npm install
 
 Start the development server:
 ```bash
-npx expo start
+npx expo start # Use --tunnel as flag if your phone is on a different network
 ```
-
-If your phone and computer are on different networks, use tunnel mode:
-```bash
-npx expo start --tunnel
-```
-
-**Note:** Your computer and phone must be on the same network to view the app in Expo Go.

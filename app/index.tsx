@@ -46,8 +46,8 @@ export default function Index() {
 
       {/* Search Bar */}
       <View style={styles.searchWrap}>
-        <TextInput 
-          style={styles.search} 
+        <TextInput
+          style={styles.search}
           placeholder='Search for a note...'
           placeholderTextColor="#999"
           value={searchQuery}
@@ -63,9 +63,9 @@ export default function Index() {
           contentContainerStyle={styles.listContent}
           renderItem={({ item }) => (
             <Pressable
-              onPress={() => router.push(`/note/${item.id}`)} 
+              onPress={() => router.push(`/note/${item.id}`)}
               style={({ pressed }) => [
-                styles.card, 
+                styles.card,
                 pressed && styles.cardPressed
               ]}>
               <View style={styles.cardTop}>
@@ -80,7 +80,7 @@ export default function Index() {
 
       {/* Button Creating Note */}
       <Pressable
-        onPress={() => router.push('/new-note')} 
+        onPress={() => router.push('/note/new-note')}
         style={({ pressed }) => [
           styles.button,
           pressed && styles.buttonPressed
@@ -88,30 +88,32 @@ export default function Index() {
         <Ionicons name="add-outline" size={28} color="#fff" />
       </Pressable>
 
-      // Button Delete Note
+      {/* View Company Notes Button */}
       <Pressable
-        onPress={() => router.push('/new-note')} 
+        onPress={() => router.push('/note/work-notes')}
         style={({ pressed }) => [
           styles.button,
-          { left: 24, right: 'auto' },
+          { right: undefined, left: 24 },
           pressed && styles.buttonPressed
         ]}>
-        <Ionicons name="trash-outline" size={24} color="#fff" />
+        <Ionicons name="briefcase-outline" size={28} color="#fff" />
       </Pressable>
 
-    </SafeAreaView> 
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: "#f6f6f6" },
+  container: {
+    flex: 1,
+    backgroundColor: "#f6f6f6"
+  },
 
-  header: { 
-    paddingTop: 16, 
-    paddingHorizontal: 16, 
-    paddingBottom: 10 },
+  header: {
+    paddingTop: 16,
+    paddingHorizontal: 16,
+    paddingBottom: 10
+  },
   headerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -128,20 +130,23 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#666',
   },
-  h1: { 
-    fontSize: 28, 
-    fontWeight: "800", 
-    letterSpacing: -0.3, 
-    color: "#111" },
-  sub: { 
-    marginTop: 4, 
-    fontSize: 14, 
-    opacity: 0.8, 
-    color: "#111" },
+  h1: {
+    fontSize: 28,
+    fontWeight: "800",
+    letterSpacing: -0.3,
+    color: "#111"
+  },
+  sub: {
+    marginTop: 4,
+    fontSize: 14,
+    opacity: 0.8,
+    color: "#111"
+  },
 
-  searchWrap: { 
-    paddingHorizontal: 16, 
-    paddingBottom: 8 },
+  searchWrap: {
+    paddingHorizontal: 16,
+    paddingBottom: 8
+  },
   search: {
     height: 44,
     borderRadius: 14,
@@ -153,10 +158,11 @@ const styles = StyleSheet.create({
     color: "#111",
   },
 
-  listContent: { 
-    padding: 16, 
-    paddingBottom: 104, 
-    gap: 5 },
+  listContent: {
+    padding: 16,
+    paddingBottom: 104,
+    gap: 5
+  },
 
   card: {
     backgroundColor: "#fff",
@@ -165,31 +171,36 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#efefef",
   },
-  cardPressed: { 
-    transform: [{ scale: 1 }], opacity: 0.70 },
+  cardPressed: {
+    transform: [{ scale: 1 }], opacity: 0.70
+  },
 
-  cardTop: { 
-    flexDirection: "row", 
-    alignItems: "center", 
-    gap: 10, },
-  title: { 
-    flex: 1, 
-    fontSize: 16, 
-    fontWeight: "700", 
-    color: "#111" },
-  time: { 
-    fontSize: 12, 
-    opacity: 0.80, 
+  cardTop: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  title: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#111"
+  },
+  time: {
+    fontSize: 12,
+    opacity: 0.80,
     color: "#111",
     textAlign: 'right',
-    maxWidth: 100,},
+    maxWidth: 100,
+  },
 
-  preview: { 
-    marginTop: 8, 
-    fontSize: 14, 
-    lineHeight: 19, 
-    opacity: 0.75, 
-    color: "#111" },
+  preview: {
+    marginTop: 8,
+    fontSize: 14,
+    lineHeight: 19,
+    opacity: 0.75,
+    color: "#111"
+  },
 
   button: {
     position: "absolute",

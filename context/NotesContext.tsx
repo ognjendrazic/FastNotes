@@ -13,6 +13,7 @@ interface NoteValues {
     notes: Note[];
     loading: boolean;
     addNote: (title: string, content: string) => Promise<string | null>;
+    editNote: (id: string, title: string, content: string) => Promise<void>;
     getNoteById: (id: string) => Note | null;
     deleteNote: (id: string) => Promise<void>;
 }
@@ -29,6 +30,7 @@ export default function NotesProvider({ children }: { children: React.ReactNode 
         const {data, error} = await supabase
         .from('Notes')
         .select('*')
+        .eq('user_id', session?.user.id)
         .order('updated_at', { ascending: false })
         if(!error && data){
             setNotes(data);
@@ -55,6 +57,23 @@ export default function NotesProvider({ children }: { children: React.ReactNode 
         setNotes(prev => prev.filter(n => n.id !== id))
     };
 
+    // Edit Notes
+    const editNote = async (id: string, title: string, content: string) => {
+        const { data, error } = await supabase
+        .from('Notes')
+        .update({ title, content, updated_at: new Date().toISOString() })
+        .eq('id', id)
+        .select()
+        .single();
+
+    if (error) {
+        console.log('Error editing note:', error);
+        return;
+    }
+
+    setNotes(prev => prev.map(n => n.id === id ? data : n));
+    };
+
     // Add Notes
     const addNote = async (title: string, content: string) => {
         const { data, error } = await supabase
@@ -75,7 +94,7 @@ export default function NotesProvider({ children }: { children: React.ReactNode 
     const getNoteById = (id: string) => notes.find((n) => n.id === id) || null;
 
     return (
-        <Notes.Provider value={{ notes, loading, addNote, getNoteById, deleteNote }}>{children}</Notes.Provider>
+        <Notes.Provider value={{ notes, loading, addNote, getNoteById, deleteNote, editNote }}>{children}</Notes.Provider>
     )
 }
 

@@ -1,30 +1,33 @@
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNotes } from "../context/NotesContext";
+import { useNotes } from "../../context/NotesContext";
 
-export default function NewNote() {
-    const { addNote } = useNotes();
+export default function EditNote() {
+    const { id } = useLocalSearchParams<{ id: string }>();
+    const { getNoteById, editNote } = useNotes();
+    const note = id ? getNoteById(id) : null;
 
-    const [title, setTitle] = React.useState("");
-    const [content, setContent] = React.useState("");
+    const [title, setTitle] = React.useState(note?.title ?? "");
+    const [content, setContent] = React.useState(note?.content ?? "");
 
-    const onSave = () => {
-      addNote(title, content);
+    const onSave = async () => {
+      if (!id) return;
+      await editNote(id, title, content);
       router.back();
     }
 
     return (
         <SafeAreaView style={styles.container} edges={['bottom']}>
             <View style={styles.header}>
-                <Text style={styles.h1}>New Note</Text>
-                <Text style={styles.sub}>Create a new note below.</Text>
+                <Text style={styles.h1}>Edit Note</Text>
+                <Text style={styles.sub}>Edit your note below.</Text>
             </View>
             <View>
                 <TextInput 
                 style={styles.search}
-                placeholder="Enter title for note"
+                placeholder="Edit title for note"
                 placeholderTextColor="#999"
                 value={title}
                 onChangeText={setTitle}
@@ -33,7 +36,7 @@ export default function NewNote() {
             <View>
                 <TextInput 
                 style={[styles.search, { height: 200, textAlignVertical: 'top', marginTop: 12 }]}
-                placeholder="Start writing your note here..."
+                placeholder="Edit your note here..."
                 placeholderTextColor="#999"
                 multiline={true}
                 value={content}

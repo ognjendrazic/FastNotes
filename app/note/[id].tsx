@@ -1,12 +1,11 @@
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import { useNotes } from "../../context/NotesContext";
 
 export default function NoteDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { getNoteById } = useNotes();
-
+  const { getNoteById, deleteNote } = useNotes();
   const note = id ? getNoteById(id) : null;
 
   if (!note) {
@@ -16,8 +15,21 @@ export default function NoteDetail() {
       </View>
     );
   }
+  
+  console.log(note.updated_at); // Debugging
 
-  console.log(note.updated_at);
+  {/* Handle note deletion with confirmation */}
+  const handleDelete = () => {
+    Alert.alert('Delete Note', 'Are you sure you want to delete this note?', [
+      { text: 'Cancel', style: 'cancel'},
+      { text: 'Delete', style: 'destructive',
+      onPress: async () => {
+        await deleteNote(note.id);
+        router.back();
+      },
+    }
+    ])
+  }
 
 return (
   <View style={styles.container}>
@@ -27,6 +39,14 @@ return (
       <View style={styles.divider} />
       <Text style={styles.content}>{note.content}</Text>
     </View>
+    <Pressable onPress={() => router.push(`/note/edit-note?id=${note.id}`)} style={({ pressed }) =>
+      [styles.deleteButton, { backgroundColor: "#007aff" }, pressed && { opacity: 0.6 }]}>
+      <Text style={styles.deleteText}>Edit Note</Text>
+    </Pressable>
+    <Pressable onPress={handleDelete} style={({ pressed }) => 
+      [styles.deleteButton, pressed && { opacity: 0.6 }]}>
+      <Text style={styles.deleteText}>Delete Note</Text>
+    </Pressable>
   </View>
 );
 }
@@ -71,5 +91,18 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     color: "#111",
     opacity: 0.9,
+  },
+
+  deleteButton: {
+    marginTop: 16,
+    backgroundColor: "#ff3b30",
+    borderRadius: 12,
+    padding: 14,
+    alignItems: "center",
+  },
+  deleteText: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: "700",
   },
 });

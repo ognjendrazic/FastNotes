@@ -14,7 +14,9 @@ export default function RootLayout() {
         <Stack.Screen name="index" options={{title: "Fast Notes"}} />
         <Stack.Screen name="login" options={{title: "Login - FastNotes", headerShown: false}} />
         <Stack.Screen name="signup" options={{title: "Sign Up - FastNotes"}} />
-        <Stack.Screen name="new-note" options={{title: "Create a new note"}} />
+        <Stack.Screen name="note/new-note" options={{title: "Create a new note"}} />
+        <Stack.Screen name="note/edit-note" options={{title: "Edit note"}} />
+        <Stack.Screen name="note/work-notes" options={{title: "View Company Notes"}} />
         <Stack.Screen name="note/[id]" options={{title: "Note"}} />
       </Stack>
       </NotesProvider>

@@ -17,13 +17,13 @@ export default function NoteDetail() {
     );
   }
 
-  console.log(note.updatedAt);
+  console.log(note.updated_at);
 
 return (
   <View style={styles.container}>
     <View style={styles.card}>
       <Text style={styles.title}>{note.title}</Text>
-      <Text style={styles.meta}>Last updated: {note.updatedAt}</Text>
+      <Text style={styles.meta}>Last updated: {new Date(note.updated_at).toLocaleString()}</Text>
       <View style={styles.divider} />
       <Text style={styles.content}>{note.content}</Text>
     </View>

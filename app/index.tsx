@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Redirect, router } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
@@ -69,7 +70,7 @@ export default function Index() {
               ]}>
               <View style={styles.cardTop}>
                 <Text style={styles.title}>{item.title}</Text>
-                <Text style={styles.time}>{item.updatedAt}</Text>
+                <Text style={styles.time}>{new Date(item.updated_at).toLocaleString()}</Text>
               </View>
               <Text style={styles.preview} numberOfLines={1}>{item.content}</Text>
             </Pressable>
@@ -84,8 +85,20 @@ export default function Index() {
           styles.button,
           pressed && styles.buttonPressed
         ]}>
-        <Text style={styles.buttonIcon}>+</Text>
+        <Ionicons name="add-outline" size={28} color="#fff" />
       </Pressable>
+
+      // Button Delete Note
+      <Pressable
+        onPress={() => router.push('/new-note')} 
+        style={({ pressed }) => [
+          styles.button,
+          { left: 24, right: 'auto' },
+          pressed && styles.buttonPressed
+        ]}>
+        <Ionicons name="trash-outline" size={24} color="#fff" />
+      </Pressable>
+
     </SafeAreaView> 
   )
 }

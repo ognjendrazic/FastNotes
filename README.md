@@ -12,7 +12,8 @@ The app allows users to create, view, and read notes **locally in memory** durin
 - Create new notes
 - View a list of existing notes
 - Open and read individual notes
-- Login/Signup with Supabase Authentication
+- Login/Signup with Supabase Authentication (Email and Password)
+- Notes are stored in database (postgress via supabase) based on user.id
 
 ## Tech Stack
 

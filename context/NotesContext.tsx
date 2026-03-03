@@ -3,16 +3,17 @@ import React from 'react';
 import { useAuth } from './AuthContext';
 
 export interface Note {
-  id: string;
-  title: string;
-  content: string;
-  updated_at: string;
+    id: string;
+    title: string;
+    content: string;
+    updated_at: string;
+    author_name: string;
 }
 
 interface NoteValues {
     notes: Note[];
     loading: boolean;
-    addNote: (title: string, content: string) => Promise<string | null>;
+    addNote: (title: string, content: string, author_name: string) => Promise<string | null>;
     editNote: (id: string, title: string, content: string) => Promise<void>;
     getNoteById: (id: string) => Note | null;
     deleteNote: (id: string) => Promise<void>;
@@ -24,28 +25,28 @@ export default function NotesProvider({ children }: { children: React.ReactNode 
     const [loading, setLoading] = React.useState(true);
     const { session } = useAuth();
 
-    // Fetch notes 
-    const fetchNotes = async() => {
-        setLoading(true);
-        const {data, error} = await supabase
-        .from('Notes')
-        .select('*')
-        .eq('user_id', session?.user.id)
-        .order('updated_at', { ascending: false })
-        if(!error && data){
-            setNotes(data);
-        }else{
-            setLoading(false);
-            console.log("Error fetching notes:", error);
-        }
-        setLoading(false)
-    }
-
     // Fetch notes when user logs in
     React.useEffect(() => {
-        if(session){
+        // Fetch notes 
+        const fetchNotes = async () => {
+            setLoading(true);
+            const { data, error } = await supabase
+                .from('Notes')
+                .select('*')
+                .eq('user_id', session?.user.id)
+                .order('updated_at', { ascending: false })
+            if (!error && data) {
+                setNotes(data);
+            } else {
+                setLoading(false);
+                console.log("Error fetching notes:", error);
+            }
+            setLoading(false)
+        }
+
+        if (session) {
             fetchNotes();
-        }else{
+        } else {
             setNotes([]);
             setLoading(false);
         }
@@ -60,27 +61,27 @@ export default function NotesProvider({ children }: { children: React.ReactNode 
     // Edit Notes
     const editNote = async (id: string, title: string, content: string) => {
         const { data, error } = await supabase
-        .from('Notes')
-        .update({ title, content, updated_at: new Date().toISOString() })
-        .eq('id', id)
-        .select()
-        .single();
+            .from('Notes')
+            .update({ title, content, updated_at: new Date().toISOString() })
+            .eq('id', id)
+            .select()
+            .single();
 
-    if (error) {
-        console.log('Error editing note:', error);
-        return;
-    }
+        if (error) {
+            console.log('Error editing note:', error);
+            return;
+        }
 
-    setNotes(prev => prev.map(n => n.id === id ? data : n));
+        setNotes(prev => prev.map(n => n.id === id ? data : n));
     };
 
     // Add Notes
-    const addNote = async (title: string, content: string) => {
+    const addNote = async (title: string, content: string, author_name: string) => {
         const { data, error } = await supabase
-        .from('Notes')
-        .insert({title, content})
-        .select()
-        .single()
+            .from('Notes')
+            .insert({ title, content, author_name })
+            .select()
+            .single()
 
         if (error) {
             console.log('Error adding note', error)
@@ -98,9 +99,9 @@ export default function NotesProvider({ children }: { children: React.ReactNode 
     )
 }
 
-export function useNotes(){
+export function useNotes() {
     const context = React.useContext(Notes);
-    if(!context){
+    if (!context) {
         throw new Error("useNotes must be used within a NotesProvider");
     }
     return context;

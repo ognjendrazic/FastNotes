@@ -52,6 +52,7 @@ export default function WorkNotes() {
                                 <Text style={styles.title}>{item.title}</Text>
                                 <Text style={styles.time}>{new Date(item.updated_at).toLocaleString()}</Text>
                             </View>
+                            <Text style={styles.author}>By {item.author_name || 'Unknown User'}</Text>
                             <Text style={styles.preview} numberOfLines={1}>{item.content}</Text>
                         </View>
                     )}
@@ -116,6 +117,13 @@ const styles = StyleSheet.create({
         color: "#111",
         textAlign: 'right',
         maxWidth: 100,
+    },
+    author: {
+        marginTop: 4,
+        fontSize: 12,
+        fontWeight: '600',
+        color: '#111',
+        opacity: 0.6,
     },
 
     preview: {

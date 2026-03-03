@@ -5,86 +5,91 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNotes } from "../../context/NotesContext";
 
 export default function EditNote() {
-    const { id } = useLocalSearchParams<{ id: string }>();
-    const { getNoteById, editNote } = useNotes();
-    const note = id ? getNoteById(id) : null;
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const { getNoteById, editNote } = useNotes();
+  const note = id ? getNoteById(id) : null;
 
-    const [title, setTitle] = React.useState(note?.title ?? "");
-    const [content, setContent] = React.useState(note?.content ?? "");
+  const [title, setTitle] = React.useState(note?.title ?? "");
+  const [content, setContent] = React.useState(note?.content ?? "");
 
-    const onSave = async () => {
-      Alert.alert('Save Changes', 'Are you sure you want to save changes to this note?', [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Save', onPress: async () => {
+  const onSave = async () => {
+    Alert.alert('Save Changes', 'Are you sure you want to save changes to this note?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Save', onPress: async () => {
           if (!id) return;
           await editNote(id, title, content);
+          Alert.alert('Success', 'Note updated successfully!');
           router.back();
-        }}
-      ]);
-    }
+        }
+      }
+    ]);
+  }
 
-    return (
-        <SafeAreaView style={styles.container} edges={['bottom']}>
-            <View style={styles.header}>
-                <Text style={styles.h1}>Edit Note</Text>
-                <Text style={styles.sub}>Edit your note below. </Text>
-            </View>
-            <View>
-                <TextInput 
-                style={styles.search}
-                placeholder="Edit title for note"
-                placeholderTextColor="#999"
-                value={title}
-                onChangeText={setTitle}
-                />
-            </View>
-            <View>
-                <TextInput 
-                style={[styles.search, { height: 200, textAlignVertical: 'top', marginTop: 12 }]}
-                placeholder="Edit your note here..."
-                placeholderTextColor="#999"
-                multiline={true}
-                value={content}
-                onChangeText={setContent}
-                />
-            </View>
-            
-              <Pressable
-                onPress={onSave}
-                disabled={!title.trim() || !content.trim()}
-                style={({ pressed }) => [
-                  styles.button,
-                  pressed && styles.buttonPressed,
-                  (!title.trim() || !content.trim()) && styles.buttonPressed,
-                ]}>
-                <Text style={styles.buttonIcon}>Save</Text>
-              </Pressable>
-        </SafeAreaView>
-    )
+  return (
+    <SafeAreaView style={styles.container} edges={['bottom']}>
+      <View style={styles.header}>
+        <Text style={styles.h1}>Edit Note</Text>
+        <Text style={styles.sub}>Edit your note below. </Text>
+      </View>
+      <View>
+        <TextInput
+          style={styles.search}
+          placeholder="Edit title for note"
+          placeholderTextColor="#999"
+          value={title}
+          onChangeText={setTitle}
+        />
+      </View>
+      <View>
+        <TextInput
+          style={[styles.search, { height: 200, textAlignVertical: 'top', marginTop: 12 }]}
+          placeholder="Edit your note here..."
+          placeholderTextColor="#999"
+          multiline={true}
+          value={content}
+          onChangeText={setContent}
+        />
+      </View>
+
+      <Pressable
+        onPress={onSave}
+        disabled={!title.trim() || !content.trim()}
+        style={({ pressed }) => [
+          styles.button,
+          pressed && styles.buttonPressed,
+          (!title.trim() || !content.trim()) && styles.buttonPressed,
+        ]}>
+        <Text style={styles.buttonIcon}>Save</Text>
+      </Pressable>
+    </SafeAreaView>
+  )
 }
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
+  container: {
+    flex: 1,
     backgroundColor: "#f6f6f6",
     paddingHorizontal: 16,
   },
 
-  header: { 
-    paddingTop: 16, 
+  header: {
+    paddingTop: 16,
     paddingBottom: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  h1: { 
-    fontSize: 20, 
-    fontWeight: "800", 
-    color: "#111" },
-  sub: { 
-    marginTop: 2, 
-    fontSize: 14, 
-    opacity: 0.8, 
-    color: "#111" },
+  h1: {
+    fontSize: 20,
+    fontWeight: "800",
+    color: "#111"
+  },
+  sub: {
+    marginTop: 2,
+    fontSize: 14,
+    opacity: 0.8,
+    color: "#111"
+  },
 
   search: {
     height: 44,

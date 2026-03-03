@@ -15,40 +15,42 @@ export default function NoteDetail() {
       </View>
     );
   }
-  
+
   console.log(note.updated_at); // Debugging
 
-  {/* Handle note deletion with confirmation */}
+  {/* Handle note deletion with confirmation */ }
   const handleDelete = () => {
     Alert.alert('Delete Note', 'Are you sure you want to delete this note?', [
-      { text: 'Cancel', style: 'cancel'},
-      { text: 'Delete', style: 'destructive',
-      onPress: async () => {
-        await deleteNote(note.id);
-        router.back();
-      },
-    }
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete', style: 'destructive',
+        onPress: async () => {
+          await deleteNote(note.id);
+          Alert.alert('Success', 'Note deleted successfully!');
+          router.back();
+        },
+      }
     ])
   }
 
-return (
-  <View style={styles.container}>
-    <View style={styles.card}>
-      <Text style={styles.title}>{note.title}</Text>
-      <Text style={styles.meta}>Last updated: {new Date(note.updated_at).toLocaleString()}</Text>
-      <View style={styles.divider} />
-      <Text style={styles.content}>{note.content}</Text>
+  return (
+    <View style={styles.container}>
+      <View style={styles.card}>
+        <Text style={styles.title}>{note.title}</Text>
+        <Text style={styles.meta}>Last updated: {new Date(note.updated_at).toLocaleString()}</Text>
+        <View style={styles.divider} />
+        <Text style={styles.content}>{note.content}</Text>
+      </View>
+      <Pressable onPress={() => router.push(`/note/edit-note?id=${note.id}`)} style={({ pressed }) =>
+        [styles.deleteButton, { backgroundColor: "#007aff" }, pressed && { opacity: 0.6 }]}>
+        <Text style={styles.deleteText}>Edit Note</Text>
+      </Pressable>
+      <Pressable onPress={handleDelete} style={({ pressed }) =>
+        [styles.deleteButton, pressed && { opacity: 0.6 }]}>
+        <Text style={styles.deleteText}>Delete Note</Text>
+      </Pressable>
     </View>
-    <Pressable onPress={() => router.push(`/note/edit-note?id=${note.id}`)} style={({ pressed }) =>
-      [styles.deleteButton, { backgroundColor: "#007aff" }, pressed && { opacity: 0.6 }]}>
-      <Text style={styles.deleteText}>Edit Note</Text>
-    </Pressable>
-    <Pressable onPress={handleDelete} style={({ pressed }) => 
-      [styles.deleteButton, pressed && { opacity: 0.6 }]}>
-      <Text style={styles.deleteText}>Delete Note</Text>
-    </Pressable>
-  </View>
-);
+  );
 }
 
 const styles = StyleSheet.create({

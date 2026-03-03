@@ -18,10 +18,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setTimeout(() => { // Simulate loading for 3 seconds
+      // setTimeout(() => { // Simulate loading for 3 seconds
         setSession(session);
         setLoading(false);
-      }, 3000);
+      //}, 3000);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {

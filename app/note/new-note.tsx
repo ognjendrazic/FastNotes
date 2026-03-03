@@ -19,7 +19,7 @@ export default function NewNote() {
         <SafeAreaView style={styles.container} edges={['bottom']}>
             <View style={styles.header}>
                 <Text style={styles.h1}>New Note</Text>
-                <Text style={styles.sub}>Create a new note below.</Text>
+                <Text style={styles.sub}>Create a new note below. </Text>
             </View>
             <View>
                 <TextInput 

@@ -22,7 +22,7 @@ export default function Index() {
 
   // Redirect to login if not authenticated
   if (!session) {
-    return <Redirect href="/login" />;
+    return <Redirect href="/auth/login" />;
   }
 
   // Filter notes based on search query

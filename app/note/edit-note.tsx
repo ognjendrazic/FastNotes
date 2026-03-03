@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNotes } from "../../context/NotesContext";
 
@@ -13,16 +13,21 @@ export default function EditNote() {
     const [content, setContent] = React.useState(note?.content ?? "");
 
     const onSave = async () => {
-      if (!id) return;
-      await editNote(id, title, content);
-      router.back();
+      Alert.alert('Save Changes', 'Are you sure you want to save changes to this note?', [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Save', onPress: async () => {
+          if (!id) return;
+          await editNote(id, title, content);
+          router.back();
+        }}
+      ]);
     }
 
     return (
         <SafeAreaView style={styles.container} edges={['bottom']}>
             <View style={styles.header}>
                 <Text style={styles.h1}>Edit Note</Text>
-                <Text style={styles.sub}>Edit your note below.</Text>
+                <Text style={styles.sub}>Edit your note below. </Text>
             </View>
             <View>
                 <TextInput 

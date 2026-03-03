@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Alert, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Signup() {
 
@@ -35,7 +35,7 @@ export default function Signup() {
       Alert.alert('Sign Up Failed', error);
     } else {
       Alert.alert('Success', 'Account created successfully');
-      router.replace('/login');
+      router.replace('/auth/login');
     }
   }
 
@@ -48,7 +48,7 @@ export default function Signup() {
       >
       <View style={styles.content}>
         <Text style={styles.h1}>Create Account</Text>
-        <Text style={styles.sub}>Sign up to start taking notes.</Text>
+        <Text style={styles.sub}>Sign up to start taking notes. </Text>
 
         <TextInput
           style={styles.input}

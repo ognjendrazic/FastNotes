@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Alert, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Login() {
 
@@ -36,7 +36,7 @@ export default function Login() {
       >
         <View style={styles.content}>
           <Text style={styles.h1}>Welcome Back</Text>
-          <Text style={styles.sub}>Log in to access your notes.</Text>
+          <Text style={styles.sub}>Log in to access your notes. </Text>
 
           <TextInput
             style={styles.input}
@@ -69,10 +69,10 @@ export default function Login() {
             <Text style={styles.buttonText}>Log In</Text>
           </Pressable>
 
-          <Pressable onPress={() => router.push('/signup')}>
+          <Pressable onPress={() => router.push('/auth/signup')}>
             <Text style={styles.signupLink}>
-              <Text>Don't have an account?</Text>
-              <Text style={styles.signupLinkBold}>Sign Up</Text>
+              <Text>Don't have an account? </Text>
+              <Text style={styles.signupLinkBold}>Sign Up </Text>
             </Text>
           </Pressable>
         </View>

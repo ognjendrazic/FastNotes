@@ -16,6 +16,7 @@ User authentication and data storage are handled by **Supabase**.
 - Notes are stored in a database (PostgreSQL via Supabase)
 - Full CRUD operations (create, read, update and delete)
 - View company notes on a separate screen (read-only)
+- Secure credentials with expo-secure-storage
 
 ## Tech Stack
 

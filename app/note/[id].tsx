@@ -1,24 +1,24 @@
 import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
-import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useNotes } from "../../context/NotesContext";
+import { useMedia } from "../../hooks/useMedia";
 
 export default function NoteDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { getNoteById, deleteNote } = useNotes();
   const note = id ? getNoteById(id) : null;
+  const { takenImage, libraryImage, activeImageUri, pickFromLibrary, takePhoto } = useMedia();
 
   if (!note) {
     return (
       <View style={styles.container}>
-        <Text>Note not found</Text>
+        <Text>Note not found, please create a new note</Text>
       </View>
     );
   }
 
-  console.log(note.updated_at); // Debugging
-
-  {/* Handle note deletion with confirmation */ }
+  // Handle note deletion with confirmation
   const handleDelete = () => {
     Alert.alert('Delete Note', 'Are you sure you want to delete this note?', [
       { text: 'Cancel', style: 'cancel' },
@@ -33,23 +33,44 @@ export default function NoteDetail() {
     ])
   }
 
+  const saveImageToNote = () => {
+    const imageData = takenImage || libraryImage;
+    if (imageData) {
+
+    } else {
+      Alert.alert('Error', 'No image selected or taken.');
+    }
+  }
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
       <View style={styles.card}>
         <Text style={styles.title}>{note.title}</Text>
         <Text style={styles.meta}>Last updated: {new Date(note.updated_at).toLocaleString()}</Text>
         <View style={styles.divider} />
         <Text style={styles.content}>{note.content}</Text>
       </View>
+      {activeImageUri && (
+        <Image source={{ uri: activeImageUri }} style={styles.noteImage} />
+      )}
       <Pressable onPress={() => router.push(`/note/edit-note?id=${note.id}`)} style={({ pressed }) =>
-        [styles.deleteButton, { backgroundColor: "#007aff" }, pressed && { opacity: 0.6 }]}>
+        [styles.deleteButton, { backgroundColor: "#000000" }, pressed && { opacity: 0.6 }]}>
         <Text style={styles.deleteText}>Edit Note</Text>
+      </Pressable>
+      <Pressable onPress={pickFromLibrary} style={({ pressed }) =>
+        [styles.deleteButton, { backgroundColor: "#262626" }, pressed && { opacity: 0.6 }]}>
+        <Text style={styles.deleteText}>Import Picture</Text>
+      </Pressable>
+      <Pressable onPress={takePhoto} style={({ pressed }) =>
+        [styles.deleteButton, { backgroundColor: "#262626" }, pressed && { opacity: 0.6 }]}>
+        <Text style={styles.deleteText}>Take Photo</Text>
       </Pressable>
       <Pressable onPress={handleDelete} style={({ pressed }) =>
         [styles.deleteButton, pressed && { opacity: 0.6 }]}>
         <Text style={styles.deleteText}>Delete Note</Text>
       </Pressable>
-    </View>
+    </ScrollView>
+
   );
 }
 
@@ -57,7 +78,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f6f6f6",
+  },
+  scrollContent: {
     padding: 16,
+    paddingBottom: 32,
   },
 
   card: {
@@ -107,4 +131,10 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "700",
   },
+  noteImage: {
+    width: "100%",
+    height: 500,
+    borderRadius: 12,
+    marginTop: 16,
+  }
 });

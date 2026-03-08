@@ -1,14 +1,17 @@
+import * as FileSystem from "expo-file-system";
 import { router, useLocalSearchParams } from "expo-router";
-import React from "react";
 import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useAuth } from "../../context/AuthContext";
 import { useNotes } from "../../context/NotesContext";
 import { useMedia } from "../../hooks/useMedia";
+import { supabase } from "../../lib/supabase";
 
 export default function NoteDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { getNoteById, deleteNote } = useNotes();
+  const { getNoteById, deleteNote, updateNoteImage, removeNoteImage } = useNotes();
   const note = id ? getNoteById(id) : null;
-  const { takenImage, libraryImage, activeImageUri, pickFromLibrary, takePhoto } = useMedia();
+  const { takenImage, libraryImage, activeImageUri, pickFromLibrary, takePhoto, deleteImage } = useMedia();
+  const { session } = useAuth();
 
   if (!note) {
     return (
@@ -33,13 +36,77 @@ export default function NoteDetail() {
     ])
   }
 
-  const saveImageToNote = () => {
-    const imageData = takenImage || libraryImage;
-    if (imageData) {
+  const handleDeleteImage = () => {
+    Alert.alert('Delete Image', 'Are you sure you want to delete this image?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete', style: 'destructive',
+        onPress: async () => {
+          if (activeImageUri) {
+            deleteImage();
+            return;
+          }
+          if (note.image_url) {
+            const path = note.image_url.split('/object/public/Media/')[1];
+            if (path) {
+              await supabase.storage.from('Media').remove([decodeURIComponent(path)]);
+            }
+            await removeNoteImage(note.id);
+          }
+        },
+      }
+    ]);
+  };
 
-    } else {
-      Alert.alert('Error', 'No image selected or taken.');
+  const saveImageToNote = async () => {
+    if (!activeImageUri) {
+      Alert.alert('No Image', 'Please select or take a photo first.');
+      return;
     }
+
+    // Client side validation for image type and size before saving to note
+    if (libraryImage) {
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+      const maxSizeMB = 15 * 1024 * 1024; // 15 MB
+
+      // Check MIME type of image
+      if (!allowedTypes.includes(libraryImage.mimeType || '')) {
+        Alert.alert('Unsupported Format', 'Please select a JPEG, PNG, or WEBP image.');
+        return;
+      }
+
+      // Check file size of image
+      if ((libraryImage.fileSize ?? 0) > maxSizeMB) {
+        Alert.alert('File Too Large', 'Please select an image smaller than 15 MB.');
+        return;
+      }
+    }
+
+    // Upload to Supabase Storage Bucket
+    const fileExtension = takenImage ? 'jpg' : libraryImage?.mimeType?.split('/')[1];
+    const fileName = `${session?.user.id}/${note.id}-${Date.now()}.${fileExtension}`;
+    const mimeType = libraryImage?.mimeType ?? 'image/jpeg';
+
+    const bytes = await new FileSystem.File(activeImageUri).bytes();
+
+    const { error: uploadError } = await supabase.storage
+      .from('Media')
+      .upload(fileName, bytes, { contentType: mimeType });
+
+    if (uploadError) {
+      console.log('Upload error:', JSON.stringify(uploadError));
+      Alert.alert('Upload Failed', uploadError.message);
+      return;
+    }
+
+    // 4. Get public URL
+    const { data: { publicUrl } } = supabase.storage
+      .from('Media')
+      .getPublicUrl(fileName);
+
+    // 5. Save URL to note
+    await updateNoteImage(note.id, publicUrl);
+    Alert.alert('Success', 'Image saved to note!');
   }
 
   return (
@@ -50,8 +117,8 @@ export default function NoteDetail() {
         <View style={styles.divider} />
         <Text style={styles.content}>{note.content}</Text>
       </View>
-      {activeImageUri && (
-        <Image source={{ uri: activeImageUri }} style={styles.noteImage} />
+      {(activeImageUri || note.image_url) && (
+        <Image source={{ uri: activeImageUri ?? note.image_url ?? undefined }} style={styles.noteImage} />
       )}
       <Pressable onPress={() => router.push(`/note/edit-note?id=${note.id}`)} style={({ pressed }) =>
         [styles.deleteButton, { backgroundColor: "#000000" }, pressed && { opacity: 0.6 }]}>
@@ -65,6 +132,18 @@ export default function NoteDetail() {
         [styles.deleteButton, { backgroundColor: "#262626" }, pressed && { opacity: 0.6 }]}>
         <Text style={styles.deleteText}>Take Photo</Text>
       </Pressable>
+      {(activeImageUri || note.image_url) && (
+        <Pressable onPress={handleDeleteImage} style={({ pressed }) =>
+          [styles.deleteButton, { backgroundColor: "#636366" }, pressed && { opacity: 0.6 }]}>
+          <Text style={styles.deleteText}>Delete Image</Text>
+        </Pressable>
+      )}
+      {activeImageUri && (
+        <Pressable onPress={saveImageToNote} style={({ pressed }) =>
+          [styles.deleteButton, { backgroundColor: "#007aff" }, pressed && { opacity: 0.6 }]}>
+          <Text style={styles.deleteText}>Save Image to Note</Text>
+        </Pressable>
+      )}
       <Pressable onPress={handleDelete} style={({ pressed }) =>
         [styles.deleteButton, pressed && { opacity: 0.6 }]}>
         <Text style={styles.deleteText}>Delete Note</Text>

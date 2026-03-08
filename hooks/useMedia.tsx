@@ -9,6 +9,7 @@ interface UseMediaReturn {
     activeImageUri: string | null;
     pickFromLibrary: () => Promise<void>;
     takePhoto: () => Promise<void>;
+    deleteImage: () => void;
 }
     
 export function useMedia(): UseMediaReturn {
@@ -39,7 +40,7 @@ export function useMedia(): UseMediaReturn {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: 'images',
             allowsEditing: true,
-            quality: 1,
+            quality: 0.5,
         });
 
         if (!result.canceled) {
@@ -65,7 +66,7 @@ export function useMedia(): UseMediaReturn {
         const result = await ImagePicker.launchCameraAsync({
             mediaTypes: 'images',
             allowsEditing: true,
-            quality: 1,
+            quality: 0.5,
         });
 
         if (!result.canceled) {
@@ -75,11 +76,18 @@ export function useMedia(): UseMediaReturn {
         }
     };
 
+    const deleteImage = () => {
+        setTakenImage(null);
+        setLibraryImage(null);
+        setActiveImageUri(null);
+    };
+
     return {
         takenImage,
         libraryImage,
         activeImageUri,
         pickFromLibrary,
         takePhoto,
+        deleteImage,
     };
 }

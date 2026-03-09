@@ -36,27 +36,24 @@ export default function NoteDetail() {
     ])
   }
 
-  const handleDeleteImage = () => {
+  
+const handleDeleteImage = () => {
     Alert.alert('Delete Image', 'Are you sure you want to delete this image?', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Delete', style: 'destructive',
-        onPress: async () => {
-          if (activeImageUri) {
-            deleteImage();
-            return;
-          }
-          if (note.image_url) {
-            const path = note.image_url.split('/object/public/Media/')[1];
-            if (path) {
-              await supabase.storage.from('Media').remove([decodeURIComponent(path)]);
-            }
-            await removeNoteImage(note.id);
-          }
-        },
-      }
+        { text: 'Cancel', style: 'cancel' },
+        {
+            text: 'Delete', style: 'destructive',
+            onPress: async () => {
+                if (activeImageUri) {
+                    deleteImage();
+                    return;
+                }
+                if (note.image_url) {
+                    await removeNoteImage(note.id);
+                }
+            },
+        }
     ]);
-  };
+};
 
   const saveImageToNote = async () => {
     if (!activeImageUri) {
@@ -99,12 +96,12 @@ export default function NoteDetail() {
       return;
     }
 
-    // 4. Get public URL
+    // Get public URL
     const { data: { publicUrl } } = supabase.storage
       .from('Media')
       .getPublicUrl(fileName);
 
-    // 5. Save URL to note
+    // Save URL to note
     await updateNoteImage(note.id, publicUrl);
     Alert.alert('Success', 'Image saved to note!');
   }

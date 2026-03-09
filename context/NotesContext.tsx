@@ -113,16 +113,19 @@ export default function NotesProvider({ children }: { children: React.ReactNode 
 
     // Remove note image
     const removeNoteImage = async (id: string) => {
-
         const note = getNoteById(id);
 
-        // If note has an image, delete it from Supabase Storage
         if (note?.image_url) {
-            const imagePath = note.image_url.split('/object/public/Media/')[1];
-            if (imagePath) {
-                const { error: storageError } = await supabase.storage
+            const rawPath = note.image_url.split('/object/public/Media/')[1];
+            if (rawPath) {
+                const imagePath = decodeURIComponent(rawPath);
+                const { data, error: storageError } = await supabase.storage
                     .from('Media')
                     .remove([imagePath]);
+
+                console.log('Delete path:', imagePath);
+                console.log('Delete result:', JSON.stringify(data));
+                console.log('Delete error:', JSON.stringify(storageError));
 
                 if (storageError) {
                     console.log('Error deleting image from storage:', storageError);

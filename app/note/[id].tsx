@@ -1,6 +1,7 @@
 import * as FileSystem from "expo-file-system";
 import { router, useLocalSearchParams } from "expo-router";
-import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useState } from "react";
+import { ActivityIndicator, Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useAuth } from "../../context/AuthContext";
 import { useNotes } from "../../context/NotesContext";
 import { useMedia } from "../../hooks/useMedia";
@@ -12,6 +13,7 @@ export default function NoteDetail() {
   const note = id ? getNoteById(id) : null;
   const { takenImage, libraryImage, activeImageUri, pickFromLibrary, takePhoto, deleteImage } = useMedia();
   const { session } = useAuth();
+  const [uploading, setUploading] = useState(false);
 
   if (!note) {
     return (
@@ -60,6 +62,7 @@ const handleDeleteImage = () => {
       Alert.alert('No Image', 'Please select or take a photo first.');
       return;
     }
+    setUploading(true);
 
     // Client side validation for image type and size before saving to note
     if (libraryImage) {
@@ -93,6 +96,7 @@ const handleDeleteImage = () => {
     if (uploadError) {
       console.log('Upload error:', JSON.stringify(uploadError));
       Alert.alert('Upload Failed', uploadError.message);
+      setUploading(false);
       return;
     }
 
@@ -103,6 +107,7 @@ const handleDeleteImage = () => {
 
     // Save URL to note
     await updateNoteImage(note.id, publicUrl);
+    setUploading(false);
     Alert.alert('Success', 'Image saved to note!');
   }
 
@@ -136,9 +141,14 @@ const handleDeleteImage = () => {
         </Pressable>
       )}
       {activeImageUri && (
-        <Pressable onPress={saveImageToNote} style={({ pressed }) =>
-          [styles.deleteButton, { backgroundColor: "#007aff" }, pressed && { opacity: 0.6 }]}>
-          <Text style={styles.deleteText}>Save Image to Note</Text>
+        <Pressable
+          onPress={saveImageToNote}
+          disabled={uploading}
+          style={({ pressed }) =>
+            [styles.deleteButton, { backgroundColor: "#007aff" }, (pressed || uploading) && { opacity: 0.6 }]}>
+          {uploading
+            ? <ActivityIndicator color="#fff" />
+            : <Text style={styles.deleteText}>Save Image to Note</Text>}
         </Pressable>
       )}
       <Pressable onPress={handleDelete} style={({ pressed }) =>

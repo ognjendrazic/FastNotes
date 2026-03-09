@@ -123,9 +123,9 @@ export default function NotesProvider({ children }: { children: React.ReactNode 
                     .from('Media')
                     .remove([imagePath]);
 
-                console.log('Delete path:', imagePath);
-                console.log('Delete result:', JSON.stringify(data));
-                console.log('Delete error:', JSON.stringify(storageError));
+                // console.log('Delete path:', imagePath);
+                // console.log('Delete result:', JSON.stringify(data));
+                // console.log('Delete error:', JSON.stringify(storageError));
 
                 if (storageError) {
                     console.log('Error deleting image from storage:', storageError);

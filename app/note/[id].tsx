@@ -62,7 +62,6 @@ const handleDeleteImage = () => {
       Alert.alert('No Image', 'Please select or take a photo first.');
       return;
     }
-    setUploading(true);
 
     // Client side validation for image type and size before saving to note
     if (libraryImage) {
@@ -81,6 +80,8 @@ const handleDeleteImage = () => {
         return;
       }
     }
+
+    setUploading(true);
 
     // Upload to Supabase Storage Bucket
     const fileExtension = takenImage ? 'jpg' : libraryImage?.mimeType?.split('/')[1];
@@ -120,7 +121,12 @@ const handleDeleteImage = () => {
         <Text style={styles.content}>{note.content}</Text>
       </View>
       {(activeImageUri || note.image_url) && (
-        <Image source={{ uri: activeImageUri ?? note.image_url ?? undefined }} style={styles.noteImage} />
+        <Image source={{ 
+          uri: activeImageUri ?? 
+          note.image_url ?? 
+          undefined }} 
+          style={styles.noteImage}
+          resizeMode="contain" />
       )}
       <Pressable onPress={() => router.push(`/note/edit-note?id=${note.id}`)} style={({ pressed }) =>
         [styles.deleteButton, { backgroundColor: "#000000" }, pressed && { opacity: 0.6 }]}>

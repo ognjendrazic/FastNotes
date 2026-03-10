@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Note } from '../../context/NotesContext';
 import { supabase } from '../../lib/supabase';
@@ -54,6 +54,13 @@ export default function WorkNotes() {
                             </View>
                             <Text style={styles.author}>By {item.author_name || 'Unknown User'}</Text>
                             <Text style={styles.preview} numberOfLines={1}>{item.content}</Text>
+                            {item.image_url && (
+                                <Image
+                                    source={{ uri: item.image_url }}
+                                    style={styles.noteImage}
+                                    resizeMode="cover"
+                                />
+                            )}
                         </View>
                     )}
                 />
@@ -132,5 +139,11 @@ const styles = StyleSheet.create({
         lineHeight: 19,
         opacity: 0.75,
         color: "#111"
+    },
+    noteImage: {
+        width: '100%',
+        aspectRatio: 16 / 9,
+        borderRadius: 8,
+        marginTop: 10,
     },
 });

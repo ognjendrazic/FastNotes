@@ -10,6 +10,9 @@ web-build/
 expo-env.d.ts
 .env
 
+# Firebase
+google-services.json
+
 # Native
 .kotlin/
 *.orig.*

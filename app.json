@@ -47,13 +47,6 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    },
-    "extra": {
-      "router": {},
-      "eas": {
-        "projectId": "63bc66ed-9ae7-4263-8ef1-ae57d1f29d4f"
-      }
-    },
-    "owner": "crusadez"
+    }
   }
 }

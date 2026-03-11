@@ -37,6 +37,11 @@ Ensure the following are installed:
 
 ## Setup & Build
 
+1. Install Dependencies
+```bash
+npm install # below steps wont work without dependecies
+```
+
 ### 1. Supabase (Database)
 1. Create a free project at [supabase.com](https://supabase.com)
 2. Go to **SQL Editor** and run the contents of `supabase/setup.sql`
@@ -44,7 +49,7 @@ Ensure the following are installed:
 
 ### 2. Firebase (Push Notifications)
 1. Create a project at [Firebase Console](https://console.firebase.google.com)
-2. Add an Android app with package name `com.crusadez.fastnotes`
+2. Add an Android app with package name `com.crusadez.FastNotes`
 3. Download `google-services.json` and place it in the project root
 
 ### 3. Edge Function (Push Notifications)
@@ -69,16 +74,21 @@ supabase functions deploy notify-new-note
 ```bash
 eas login
 ```
-3. Setup credentials and follow step below:
+3. Create expo project and link it
+```bash
+eas init
+```
+4. Generate a private key from Firebase:
+   - Go to **Firebase Console → Your App → Settings → Service Accounts → Firebase Admin SDK**
+   - Click **Generate new private key** and download the JSON file to your project root
+
+5. Setup credentials with the new private key, run:
 ```bash
 eas credentials
 ```
-4. Go to `Android` → `Development` → `Google Service Account` → `Manage Push Notifications` → `Setup New Key` and copy the key from your Firebase service admin account
+Go to **Android → Development → Google Service Account → Manage Push Notifications → Setup New Key** and select the downloaded JSON file
 
 ### 6. Run
-```bash
-npm install # installs dependencies
-```
 ```bash
 npx expo run:android # local development build (needed for push notifications to work)
 ```

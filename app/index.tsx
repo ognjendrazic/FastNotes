@@ -26,7 +26,7 @@ export default function Index() {
   const { session, loading, signOut } = useAuth();
   const { notes } = useNotes();
   const [searchQuery, setSearchQuery] = useState('');
-  const [pushToken, setPushToken] = useState('');
+  const [_pushToken, setPushToken] = useState('');
 
   useEffect(() => {
   registerForPushNotificationsAsync().then(token => {

@@ -1,15 +1,38 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Redirect, router } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
 import { useNotes } from '../context/NotesContext';
+import registerForPushNotificationsAsync from "../hooks/usePushNotification";
+
+// Function to send a test push notification
+/*async function sendTestNotification(token: string) {
+  await fetch('https://exp.host/--/api/v2/push/send', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      to: token,
+      sound: 'default',
+      title: 'Hello!',
+      body: 'World',
+    }),
+  });
+}
+*/
 
 export default function Index() {
   const { session, loading, signOut } = useAuth();
   const { notes } = useNotes();
   const [searchQuery, setSearchQuery] = useState('');
+  const [_pushToken, setPushToken] = useState('');
+
+  useEffect(() => {
+  registerForPushNotificationsAsync().then(token => {
+    if (token) setPushToken(token);
+  });
+}, []);
 
   // Show loading indicator while checking auth status, set to 3 seconds
   if (loading) {

@@ -8,6 +8,7 @@ export interface Note {
     content: string;
     updated_at: string;
     author_name: string;
+    image_url: string | null;
 }
 
 interface NoteValues {
@@ -17,6 +18,8 @@ interface NoteValues {
     editNote: (id: string, title: string, content: string) => Promise<void>;
     getNoteById: (id: string) => Note | null;
     deleteNote: (id: string) => Promise<void>;
+    updateNoteImage: (id: string, image_url: string) => Promise<void>;
+    removeNoteImage: (id: string) => Promise<void>;
 }
 
 const Notes = React.createContext<NoteValues | null>(null);
@@ -92,10 +95,63 @@ export default function NotesProvider({ children }: { children: React.ReactNode 
         return data.id;
     };
 
+    // Update note image
+    const updateNoteImage = async (id: string, image_url: string) => {
+        const { data, error } = await supabase
+            .from('Notes')
+            .update({ image_url })
+            .eq('id', id)
+            .select()
+            .single();
+
+        if (error) {
+            console.log('Error updating note image:', error);
+            return;
+        }
+        setNotes(prev => prev.map(n => n.id === id ? data : n));
+    }
+
+    // Remove note image
+    const removeNoteImage = async (id: string) => {
+        const note = getNoteById(id);
+
+        if (note?.image_url) {
+            const rawPath = note.image_url.split('/object/public/Media/')[1];
+            if (rawPath) {
+                const imagePath = decodeURIComponent(rawPath);
+                const { data, error: storageError } = await supabase.storage
+                    .from('Media')
+                    .remove([imagePath]);
+
+                // console.log('Delete path:', imagePath);
+                // console.log('Delete result:', JSON.stringify(data));
+                // console.log('Delete error:', JSON.stringify(storageError));
+
+                if (storageError) {
+                    console.log('Error deleting image from storage:', storageError);
+                    return;
+                }
+            }
+        }
+
+        const { data, error } = await supabase
+            .from('Notes')
+            .update({ image_url: null })
+            .eq('id', id)
+            .select()
+            .single();
+
+        if (error) {
+            console.log('Error removing note image:', error);
+            return;
+        }
+        setNotes(prev => prev.map(n => n.id === id ? data : n));
+    }
+
     const getNoteById = (id: string) => notes.find((n) => n.id === id) || null;
 
     return (
-        <Notes.Provider value={{ notes, loading, addNote, getNoteById, deleteNote, editNote }}>{children}</Notes.Provider>
+        <Notes.Provider value={{ notes, loading, addNote, getNoteById, deleteNote, editNote, updateNoteImage, removeNoteImage }}>{children}</Notes.Provider>
     )
 }
 

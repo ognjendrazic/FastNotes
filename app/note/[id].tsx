@@ -79,6 +79,23 @@ const handleDeleteImage = () => {
         Alert.alert('File Too Large', 'Please select an image smaller than 15 MB.');
         return;
       }
+    } else if (takenImage) {
+      const maxSizeBytes = 15 * 1024 * 1024; // 15 MB
+      const fileInfo = await FileSystem.getInfoAsync(takenImage);
+
+      // Check file size of camera image
+      if (fileInfo.exists && fileInfo.size && fileInfo.size > maxSizeBytes) {
+        Alert.alert('File Too Large', 'Please take a photo smaller than 15 MB.');
+        return;
+      }
+
+      // Check file extension of camera image
+      const extension = takenImage.split('.').pop()?.toLowerCase();
+      const allowedExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+      if (!extension || !allowedExtensions.includes(extension)) {
+        Alert.alert('Unsupported Format', 'Please take a JPEG, PNG, or WEBP image.');
+        return;
+      }
     }
 
     setUploading(true);

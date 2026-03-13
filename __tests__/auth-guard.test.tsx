@@ -1,6 +1,6 @@
-// __tests__/auth-guard.test.tsx
 import { render, screen } from '@testing-library/react-native';
 
+// Mocks
 jest.mock('expo', () => ({}));
 jest.mock('../lib/supabase', () => ({ supabase: {} }));
 

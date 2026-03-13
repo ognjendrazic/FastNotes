@@ -1,7 +1,7 @@
-// __tests__/index-loader.test.tsx
 import { render, screen } from '@testing-library/react-native';
 import { ActivityIndicator } from 'react-native';
 
+// Mocks
 jest.mock('expo', () => ({}));
 jest.mock('../lib/supabase', () => ({ supabase: {} }));
 

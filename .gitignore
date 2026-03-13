@@ -13,6 +13,9 @@ expo-env.d.ts
 # Firebase
 google-services.json
 
+# Supabase
+.temp
+
 # Native
 .kotlin/
 *.orig.*

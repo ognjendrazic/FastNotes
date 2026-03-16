@@ -36,7 +36,6 @@ export default async function registerForPushNotificationsAsync() {
     Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
 
   const token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
-  console.log('Push token:', token);
 
   // Save token to Supabase
   const { data: { user } } = await supabase.auth.getUser();

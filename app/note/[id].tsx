@@ -112,7 +112,6 @@ const handleDeleteImage = () => {
       .upload(fileName, bytes, { contentType: mimeType });
 
     if (uploadError) {
-      console.log('Upload error:', JSON.stringify(uploadError));
       Alert.alert('Upload Failed', uploadError.message);
       setUploading(false);
       return;

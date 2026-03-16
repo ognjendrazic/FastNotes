@@ -7,6 +7,7 @@ University of Grimstad, Norway
 **FastNotes** is a lightweight personal note-taking application built with **React Native** and **Expo**.
 User authentication and data storage are handled by **Supabase**.
 
+> **Note:** A pre-built APK is available in the [Releases](../../releases) section for testing on a physical Android device or emulator. Simply download and install it, no build steps required. Make sure "Install from unknown sources" is enabled on your device.
 ****
 
 ## Features

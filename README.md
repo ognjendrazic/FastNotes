@@ -12,7 +12,7 @@ User authentication and data storage are handled by **Supabase**.
 
 ## Features
 <details>
-<summary>Click to expand</summary>
+<summary>Click to view features</summary>
 
 - Create new notes
 - View a list of existing notes

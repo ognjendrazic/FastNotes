@@ -7,24 +7,9 @@ import { useAuth } from '../context/AuthContext';
 import { useNotes } from '../context/NotesContext';
 import registerForPushNotificationsAsync from "../hooks/usePushNotification";
 
-// Function to send a test push notification
-/*async function sendTestNotification(token: string) {
-  await fetch('https://exp.host/--/api/v2/push/send', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      to: token,
-      sound: 'default',
-      title: 'Hello!',
-      body: 'World',
-    }),
-  });
-}
-*/
-
 export default function Index() {
   const { session, loading, signOut } = useAuth();
-  const { notes } = useNotes();
+  const { notes, fetchNotes, loadingMore } = useNotes();
   const [searchQuery, setSearchQuery] = useState('');
   const [_pushToken, setPushToken] = useState('');
 
@@ -79,7 +64,7 @@ export default function Index() {
       </View>
 
       {/* Notes List */}
-      <View>
+      <View style={styles.listWrap}>
         <FlatList
           data={filteredNotes}
           keyExtractor={(notes) => notes.id}
@@ -100,6 +85,18 @@ export default function Index() {
           )}
         />
       </View>
+      
+      {/* Load More Button*/}
+      <Pressable
+        disabled={loadingMore}
+        style={({ pressed }) => [
+          styles.loadMoreButton,
+          loadingMore && styles.loadMoreButtonDisabled,
+          pressed && !loadingMore && styles.loadMoreButtonPressed,
+        ]}
+        onPress={() => fetchNotes(notes.length, true)}>
+        <Text style={styles.loadMoreText}>{loadingMore ? 'Loading...' : 'Load More'}</Text>
+      </Pressable>
 
       {/* Button Creating Note */}
       <Pressable
@@ -186,6 +183,9 @@ const styles = StyleSheet.create({
     paddingBottom: 104,
     gap: 5
   },
+  listWrap: {
+    flex: 1,
+  },
 
   card: {
     backgroundColor: "#fff",
@@ -246,5 +246,24 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "300",
     marginTop: -2,
+  },
+  loadMoreButton: {
+    alignSelf: 'center',
+    marginBottom: 90,
+    paddingHorizontal: 150,
+    paddingVertical: 10,
+    borderRadius: 10,
+    backgroundColor: '#e9e9e9',
+  },
+  loadMoreButtonDisabled: {
+    opacity: 0.6,
+  },
+  loadMoreButtonPressed: {
+    opacity: 0.85,
+  },
+  loadMoreText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#666',
   },
 });

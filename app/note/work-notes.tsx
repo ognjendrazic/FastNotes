@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Image, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Note } from '../../context/NotesContext';
 import { supabase } from '../../lib/supabase';
@@ -7,19 +7,34 @@ import { supabase } from '../../lib/supabase';
 export default function WorkNotes() {
     const [publicNotes, setPublicNotes] = useState<Note[]>([]);
     const [loading, setLoading] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
 
-    // Fetch all notes regardless of user, using policy to filter out private notes
+    const PAGE_SIZE = 5;
+
+    const fetchAllNotes = async (start = 0, append = false) => {
+        if (append) {
+            setLoadingMore(true);
+        } else {
+            setLoading(true);
+        }
+
+        const { data } = await supabase
+            .from('Notes')
+            .select('*')
+            .order('updated_at', { ascending: false })
+            .range(start, start + PAGE_SIZE - 1);
+
+        if (data) {
+            setPublicNotes((prev) => (append ? [...prev, ...data] : data));
+        }
+
+        setLoading(false);
+        setLoadingMore(false);
+    };
+
+    // Fetch first page
     useEffect(() => {
-        const fetchAllNotes = async () => {
-            const { data } = await supabase
-                .from('Notes')
-                .select('*')
-                .order('updated_at', { ascending: false });
-
-            if (data) setPublicNotes(data);
-            setLoading(false);
-        };
-        fetchAllNotes();
+        fetchAllNotes(0, false);
     }, []);
 
 
@@ -41,7 +56,7 @@ export default function WorkNotes() {
             </View>
 
             {/* Notes List */}
-            <View>
+            <View style={styles.listWrap}>
                 <FlatList
                     data={publicNotes}
                     keyExtractor={(item) => item.id}
@@ -65,6 +80,18 @@ export default function WorkNotes() {
                     )}
                 />
             </View>
+
+            {/* Load More Button */}
+            <Pressable
+                disabled={loadingMore}
+                style={({ pressed }) => [
+                    styles.loadMoreButton,
+                    loadingMore && styles.loadMoreButtonDisabled,
+                    pressed && !loadingMore && styles.loadMoreButtonPressed,
+                ]}
+                onPress={() => fetchAllNotes(publicNotes.length, true)}>
+                <Text style={styles.loadMoreText}>{loadingMore ? 'Loading...' : 'Load More'}</Text>
+            </Pressable>
         </SafeAreaView>
     );
 }
@@ -97,6 +124,9 @@ const styles = StyleSheet.create({
         padding: 16,
         paddingBottom: 104,
         gap: 5
+    },
+    listWrap: {
+        flex: 1,
     },
 
     card: {
@@ -145,5 +175,24 @@ const styles = StyleSheet.create({
         aspectRatio: 16 / 9,
         borderRadius: 8,
         marginTop: 10,
+    },
+    loadMoreButton: {
+        alignSelf: 'center',
+        marginBottom: 24,
+        paddingHorizontal: 150,
+        paddingVertical: 10,
+        borderRadius: 10,
+        backgroundColor: '#e9e9e9',
+    },
+    loadMoreButtonDisabled: {
+        opacity: 0.6,
+    },
+    loadMoreButtonPressed: {
+        opacity: 0.85,
+    },
+    loadMoreText: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#666',
     },
 });

@@ -1,3 +1,4 @@
+import { useIsFocused } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import * as Linking from 'expo-linking';
 import { useState } from 'react';
@@ -11,11 +12,13 @@ interface UseMediaReturn {
     takePhoto: () => Promise<void>;
     deleteImage: () => void;
 }
-    
+
 export function useMedia(): UseMediaReturn {
     const [takenImage, setTakenImage] = useState<string | null>(null);
     const [libraryImage, setLibraryImage] = useState<ImagePicker.ImagePickerAsset | null>(null);
     const [activeImageUri, setActiveImageUri] = useState<string | null>(null);
+
+    const isMediaFocused = useIsFocused();
 
     const requestPermission = async (type: 'camera' | 'library') => {
         const permission = type === 'camera'
@@ -34,6 +37,11 @@ export function useMedia(): UseMediaReturn {
     };
 
     const pickFromLibrary = async () => {
+
+        if (!isMediaFocused) {
+            return;
+        }
+
         const hasPermission = await requestPermission('library');
         if (!hasPermission) return;
 
@@ -51,6 +59,11 @@ export function useMedia(): UseMediaReturn {
     };
 
     const takePhoto = async () => {
+
+        if (!isMediaFocused) {
+            return;
+        }
+
         const hasPermission = await requestPermission('camera');
         if (!hasPermission) return;
 

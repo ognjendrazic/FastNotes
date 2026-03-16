@@ -23,6 +23,7 @@ User authentication and data storage are handled by **Supabase**.
 - Secure credentials with expo-secure-storage
 - Upload images to notes via image gallery or camera
 - Push notifications for new notes
+- Pagination (limit of five notes per page)
 </details>
 
 ## Prerequisites
@@ -31,13 +32,13 @@ Ensure the following are installed:
 
 - **Node.js** (v24 LTS)
 - **Expo CLI**
-- **Supabase CLI**
+- **Supabase CLI**, Installed as a dev dependecy, use npx supabase
 
 ****
 
 ## Setup & Build
 
-1. Install Dependencies
+Install Dependencies
 ```bash
 npm install # below steps wont work without dependecies
 ```
@@ -91,4 +92,14 @@ Go to **Android → Development → Google Service Account → Manage Push Notif
 ### 6. Run
 ```bash
 npx expo run:android # local development build (needed for push notifications to work)
+```
+
+### Build APK or IPA
+Remember to remove the **google-services.json** from **.gitignore** before starting a build to expo.dev or it will fail
+Also add your env variables to expo.dev under environment variables, so eas build can pick them up and bake them in
+```bash
+eas build --platform android --profile preview --local
+eas build --platform ios --profile preview --local
+# You can drop --local if you want to build over cloud
+# Follow the steps and make sure app is initialized in expo.dev
 ```

@@ -45,15 +45,6 @@ export function useMedia(): UseMediaReturn {
 
         if (!result.canceled) {
             const asset = result.assets[0];
-            console.log('Image:', {
-                uri: asset.uri,
-                fileName: asset.fileName,
-                fileSize: asset.fileSize,
-                sizeMB: ((asset.fileSize || 0) / (1024 * 1024)).toFixed(1),
-                mimeType: asset.mimeType,
-                width: asset.width,
-                height: asset.height,
-            });
             setLibraryImage(asset);
             setActiveImageUri(asset.uri);
         }
@@ -72,7 +63,6 @@ export function useMedia(): UseMediaReturn {
         if (!result.canceled) {
             setTakenImage(result.assets[0].uri);
             setActiveImageUri(result.assets[0].uri);
-            console.log('Taken photo URI:', result.assets[0].uri);
         }
     };
 

@@ -42,7 +42,6 @@ export default function NotesProvider({ children }: { children: React.ReactNode 
                 setNotes(data);
             } else {
                 setLoading(false);
-                console.log("Error fetching notes:", error);
             }
             setLoading(false)
         }
@@ -71,7 +70,6 @@ export default function NotesProvider({ children }: { children: React.ReactNode 
             .single();
 
         if (error) {
-            console.log('Error editing note:', error);
             return;
         }
 
@@ -87,7 +85,6 @@ export default function NotesProvider({ children }: { children: React.ReactNode 
             .single()
 
         if (error) {
-            console.log('Error adding note', error)
             return null;
         }
 
@@ -105,7 +102,6 @@ export default function NotesProvider({ children }: { children: React.ReactNode 
             .single();
 
         if (error) {
-            console.log('Error updating note image:', error);
             return;
         }
         setNotes(prev => prev.map(n => n.id === id ? data : n));
@@ -123,12 +119,7 @@ export default function NotesProvider({ children }: { children: React.ReactNode 
                     .from('Media')
                     .remove([imagePath]);
 
-                // console.log('Delete path:', imagePath);
-                // console.log('Delete result:', JSON.stringify(data));
-                // console.log('Delete error:', JSON.stringify(storageError));
-
                 if (storageError) {
-                    console.log('Error deleting image from storage:', storageError);
                     return;
                 }
             }
@@ -142,7 +133,6 @@ export default function NotesProvider({ children }: { children: React.ReactNode 
             .single();
 
         if (error) {
-            console.log('Error removing note image:', error);
             return;
         }
         setNotes(prev => prev.map(n => n.id === id ? data : n));
